@@ -1,0 +1,185 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><title>apt-getで見つからないパッケージを追加する方法(debian, ubuntu両方対応) - Qiita</title><meta content="width=device-width,initial-scale=1,shrink-to-fit=no" name="viewport" /><meta content="#55c500" name="theme-color" /><meta content="XWpkTG32-_C4joZoJ_UsmDUi-zaH-hcrjF6ZC_FoFbk" name="google-site-verification" /><link href="/manifest.json" rel="manifest" /><link href="/opensearch.xml" rel="search" title="Qiita" type="application/opensearchdescription+xml" /><script async="" src="https://www.googletagmanager.com/gtag/js?id=AW-935296116"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'AW-935296116');
+
+// Event snippet for qiita remarketing page
+gtag('event', 'conversion', {
+    'send_to': 'AW-935296116/jvRhCOaj5YYBEPT4_b0D',
+    'value': 1.0,
+    'currency': 'JPY',
+    'aw_remarketing_only': true
+});</script><script async="" src="https://www.googletagmanager.com/gtag/js?id=AW-878053044"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'AW-878053044');</script><meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="d3KykdzRGdPvDeyPdEjogRVsYVV35VAbVO/fu2aYgd0hjsCEhiWVxlsnU1c/YZ9ShuvX3xrCbe/hQPq3/FBlzA==" /><link rel="shortcut icon" type="image/x-icon" href="https://cdn.qiita.com/assets/favicons/public/production.ico" /><link rel="apple-touch-icon" type="image/png" href="https://cdn.qiita.com/assets/favicons/public/apple-touch-icon-f9a6afad761ec2306e10db2736187c8b.png" /><link rel="stylesheet" media="all" href="https://cdn.qiita.com/assets/public/style-e965403988fe99e553a97b767ffb5d14.min.css" /><script defer="" src="https://cdn.polyfill.io/v2/polyfill.min.js"></script><script src="https://cdn.qiita.com/assets/public/bundle-3712c5d4fd5330a2602cdffb0a89ee49.min.js" defer="defer"></script><meta content="summary" name="twitter:card" /><meta content="@Qiita" name="twitter:site" /><meta content="@kon_yu" name="twitter:creator" /><meta property="og:type" content="article"><meta property="og:title" content="apt-getで見つからないパッケージを追加する方法(debian, ubuntu両方対応) - Qiita"><meta property="og:image" content="https://cdn.qiita.com/assets/qiita-fb-2887e7b4aad86fd8c25cea84846f2236.png"><meta property="og:description" content="
+## はじめに
+apt-get installでパッケージ名を指定してインストールしようとした場合に、デフォルトにリポジトリに登録されておらずインストール出来ない場合がある。
+今回はiozone3をインストールする例を使って説明する..."><meta content="https://qiita.com/kon_yu/items/8ac350f3951f8534c931" property="og:url" /><meta content="Qiita" property="og:site_name" /><meta content="564524038" property="fb:admins" /><meta content="Debian,Ubuntu,apt-get,apt-add-repository" name="keywords" /></head><body><div class="allWrapper"><div data-hyperapp-app="GlobalHeader" data-hyperapp-props="{&quot;unreadNotificationsCount&quot;:null,&quot;realms&quot;:[{&quot;humanName&quot;:&quot;Qiita&quot;,&quot;isCurrentRealm&quot;:true,&quot;isQiita&quot;:true,&quot;isQiitaTeam&quot;:false,&quot;loggedInUser&quot;:null,&quot;teamId&quot;:null,&quot;url&quot;:&quot;https://qiita.com/&quot;}],&quot;teamFindUrl&quot;:&quot;https://teams-center.qiita.com/find_team&quot;,&quot;isTeamOnlyUser&quot;:null,&quot;currentUser&quot;:null}"><div class="st-Header" id="globalHeader"><div class="st-Header_container"><div class="st-Header_start"><a class="st-Header_logo mr-1" href="/"><svg viewBox="0 0 75 25" xmlns="http://www.w3.org/2000/svg"><title>Qiita</title><path d="M24.6 12.2C24.6 6.2 20 0 12.2 0 6.2 0 0 4.6 0 12.4c0 6 4.6 12.2 12.4 12.2 2.5 0 5-.8 7.1-2.3l3.6 3.6 1.6-1.6-3.4-3.4c2.1-2.3 3.3-5.3 3.3-8.7zm-12.4-10c5.7 0 10.2 4.4 10.2 10.1 0 4.9-3.8 10.1-10.1 10.1s-10.1-5.1-10.1-10c0-6.4 5.1-10.2 10-10.2zM30.5 7.1h2.1v17h-2.1zM31.5 4.8c-1 0-1.8-.8-1.8-1.8s.8-1.8 1.8-1.8 1.8.8 1.8 1.8-.8 1.8-1.8 1.8zM40 4.8c-1 0-1.8-.8-1.8-1.8S39 1.2 40 1.2s1.8.8 1.8 1.8S41 4.8 40 4.8zM39 7.1h2.1v17H39zM53.7 24.4c-3.9 0-6.2-3-6.2-6v-16h2.1v4.7H57v2.1h-7.4v9.3c0 1.9 1.5 3.9 4.1 3.9.7 0 1.4-.2 2-.6l.2-.1 1 1.8-.2.1c-.9.5-2 .8-3 .8zM67.6 24.5c-5.7 0-9.1-4.5-9.1-8.9 0-5.7 4.5-9.1 8.9-9.1 2.3 0 4.1.8 5.4 2.3V7.1h2.1v17h-2.1v-1.9c-1.2 1.5-3 2.3-5.2 2.3zm-.2-15.9c-3.4 0-6.8 2.6-6.8 7 0 3.4 2.6 6.8 7 6.8 2 0 4-.9 5.3-2.5v-8.8c-1.4-1.6-3.3-2.5-5.5-2.5z"></path></svg></a><div><div class="st-Header_realmSelector"><span class="fa fa-fw fa-caret-down"></span></div></div><div><div class="st-Header_community">Community<span class="fa fa-fw fa-caret-down ml-1of2"></span></div></div><form class="st-Header_search"><span class="fa fa-search"></span><input class="st-Header_searchInput" placeholder="Search" type="search" /></form><div class="st-Header_searchButton"><span class="fa fa-serach"></span></div></div><div class="st-Header_end"><a class="st-Header_signupButton" href="/signup">Signup</a><a class="st-Header_loginLink" href="/login">Login</a></div></div></div></div><div class="st-HeaderAlert st-HeaderAlert-warning"><div class="st-HeaderAlert_body"></div></div><script type="application/ld+json">{"@context":"http://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"/","name":"Qiita"}},{"@type":"ListItem","position":2,"item":{"@id":"/tags/%23%3CQiita::Graph::Result:0x0056321c4557f0%3E","name":"Debian"}}]}</script><script async="" src="https://cdn.bigmining.com/private/js/qiita_bigmining.js"></script><div style="display:none"><div class="TagList__label"><span></span><span>Debian</span></div><div class="TagList__label"><span></span><span>Ubuntu</span></div><div class="TagList__label"><span></span><span>apt-get</span></div><div class="TagList__label"><span></span><span>apt-add-repository</span></div></div><img style="display:block;margin:0;padding:0;border:0;outline:0;width:0;height:0;line-height:0;" alt="" src="https://relay-dsp.ad-m.asia/dmp/sync/bizmatrix?pid=c3ed207b574cf11376&amp;d=x18o8hduaj&amp;uid=" /><div data-hyperapp-app="PersonalPublicArticle" data-hyperapp-props="{&quot;article&quot;:{&quot;body&quot;:&quot;\n\u003ch2\u003e\n\u003cspan id=\&quot;はじめに\&quot; class=\&quot;fragment\&quot;\u003e\u003c/span\u003e\u003ca href=\&quot;#%E3%81%AF%E3%81%98%E3%82%81%E3%81%AB\&quot;\u003e\u003ci class=\&quot;fa fa-link\&quot;\u003e\u003c/i\u003e\u003c/a\u003eはじめに\u003c/h2\u003e\n\n\u003cp\u003eapt-get installでパッケージ名を指定してインストールしようとした場合に、デフォルトにリポジトリに登録されておらずインストール出来ない場合がある。\u003cbr\u003e\n今回はiozone3をインストールする例を使って説明する。\u003c/p\u003e\n\n\u003ch3\u003e\n\u003cspan id=\&quot;検証環境\&quot; class=\&quot;fragment\&quot;\u003e\u003c/span\u003e\u003ca href=\&quot;#%E6%A4%9C%E8%A8%BC%E7%92%B0%E5%A2%83\&quot;\u003e\u003ci class=\&quot;fa fa-link\&quot;\u003e\u003c/i\u003e\u003c/a\u003e検証環境\u003c/h3\u003e\n\n\u003cp\u003eDebian GNU/Linux 8\u003c/p\u003e\n\n\u003ch2\u003e\n\u003cspan id=\&quot;対象のパッケージがどこのリポジトリにあるか探す\&quot; class=\&quot;fragment\&quot;\u003e\u003c/span\u003e\u003ca href=\&quot;#%E5%AF%BE%E8%B1%A1%E3%81%AE%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8%E3%81%8C%E3%81%A9%E3%81%93%E3%81%AE%E3%83%AA%E3%83%9D%E3%82%B8%E3%83%88%E3%83%AA%E3%81%AB%E3%81%82%E3%82%8B%E3%81%8B%E6%8E%A2%E3%81%99\&quot;\u003e\u003ci class=\&quot;fa fa-link\&quot;\u003e\u003c/i\u003e\u003c/a\u003e対象のパッケージがどこのリポジトリにあるか探す\u003c/h2\u003e\n\n\u003ch3\u003e\n\u003cspan id=\&quot;まずデフォルトのパッケージのリストからインストールを試みる\&quot; class=\&quot;fragment\&quot;\u003e\u003c/span\u003e\u003ca href=\&quot;#%E3%81%BE%E3%81%9A%E3%83%87%E3%83%95%E3%82%A9%E3%83%AB%E3%83%88%E3%81%AE%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8%E3%81%AE%E3%83%AA%E3%82%B9%E3%83%88%E3%81%8B%E3%82%89%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E3%82%92%E8%A9%A6%E3%81%BF%E3%82%8B\&quot;\u003e\u003ci class=\&quot;fa fa-link\&quot;\u003e\u003c/i\u003e\u003c/a\u003eまずデフォルトのパッケージのリストからインストールを試みる\u003c/h3\u003e\n\n\u003cp\u003eまずデフォルトのパッケージのリストからインストールを試みてパッケージが見つからないエラーが出ることを確認する\u003c/p\u003e\n\n\u003cdiv class=\&quot;code-frame\&quot; data-lang=\&quot;text\&quot;\u003e\u003cdiv class=\&quot;highlight\&quot;\u003e\u003cpre\u003e\u0026gt; apt-get install iozone3\nReading package lists... Done\nBuilding dependency tree\nReading state information... Done\nE: Unable to locate package iozone3\n\u003c/pre\u003e\u003c/div\u003e\u003c/div\u003e\n\n\u003ch3\u003e\n\u003cspan id=\&quot;パッケージがあるリポジトリを探す\&quot; class=\&quot;fragment\&quot;\u003e\u003c/span\u003e\u003ca href=\&quot;#%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8%E3%81%8C%E3%81%82%E3%82%8B%E3%83%AA%E3%83%9D%E3%82%B8%E3%83%88%E3%83%AA%E3%82%92%E6%8E%A2%E3%81%99\&quot;\u003e\u003ci class=\&quot;fa fa-link\&quot;\u003e\u003c/i\u003e\u003c/a\u003eパッケージがあるリポジトリを探す\u003c/h3\u003e\n\n\u003cp\u003eパッケージ名を検索ウインドウに入れて調べると、どこのパッケージにあるか教えてくれる。\u003c/p\u003e\n\n\u003cp\u003eDebianの場合はこちら\u003cbr\u003e\n\u003ca href=\&quot;https://www.debian.org/distrib/packages\&quot; class=\&quot;autolink\&quot; rel=\&quot;nofollow noopener\&quot; target=\&quot;_blank\&quot;\u003ehttps://www.debian.org/distrib/packages\u003c/a\u003e\u003c/p\u003e\n\n\u003cp\u003eUbuntuの場合はこちら\u003cbr\u003e\n\u003ca href=\&quot;http://packages.ubuntu.com/ja/\&quot; class=\&quot;autolink\&quot; rel=\&quot;nofollow noopener\&quot; target=\&quot;_blank\&quot;\u003ehttp://packages.ubuntu.com/ja/\u003c/a\u003e\u003c/p\u003e\n\n\u003cp\u003eDebianのiozone3はnon-freeのリポジトリにある\u003cbr\u003e\n\u003ca href=\&quot;https://packages.debian.org/jessie/utils/iozone3\&quot; class=\&quot;autolink\&quot; rel=\&quot;nofollow noopener\&quot; target=\&quot;_blank\&quot;\u003ehttps://packages.debian.org/jessie/utils/iozone3\u003c/a\u003e\u003c/p\u003e\n\n\u003cp\u003e以下よりnon-freeリポジトリをリポジトリのリストに追加する手順を説明する\u003c/p\u003e\n\n\u003ch2\u003e\n\u003cspan id=\&quot;repositoryを追加する\&quot; class=\&quot;fragment\&quot;\u003e\u003c/span\u003e\u003ca href=\&quot;#repository%E3%82%92%E8%BF%BD%E5%8A%A0%E3%81%99%E3%82%8B\&quot;\u003e\u003ci class=\&quot;fa fa-link\&quot;\u003e\u003c/i\u003e\u003c/a\u003erepositoryを追加する\u003c/h2\u003e\n\n\u003cp\u003eまず現状のリポジトリのリストを確認する\u003c/p\u003e\n\n\u003cdiv class=\&quot;code-frame\&quot; data-lang=\&quot;text\&quot;\u003e\u003cdiv class=\&quot;highlight\&quot;\u003e\u003cpre\u003e\u0026gt; cat /etc/apt/sources.list\ndeb http://httpredir.debian.org/debian jessie main\ndeb http://httpredir.debian.org/debian jessie-updates main\ndeb http://security.debian.org jessie/updates main\n\u003c/pre\u003e\u003c/div\u003e\u003c/div\u003e\n\n\u003cp\u003enon-freeがないことを確認\u003c/p\u003e\n\n\u003ch3\u003e\n\u003cspan id=\&quot;apt-add-repositoryをインストールする\&quot; class=\&quot;fragment\&quot;\u003e\u003c/span\u003e\u003ca href=\&quot;#apt-add-repository%E3%82%92%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E3%81%99%E3%82%8B\&quot;\u003e\u003ci class=\&quot;fa fa-link\&quot;\u003e\u003c/i\u003e\u003c/a\u003eapt-add-repositoryをインストールする\u003c/h3\u003e\n\n\u003cp\u003eリポジトリの追加用のapt-add-repositoryパッケージをインストールする\u003c/p\u003e\n\n\u003cdiv class=\&quot;code-frame\&quot; data-lang=\&quot;text\&quot;\u003e\u003cdiv class=\&quot;highlight\&quot;\u003e\u003cpre\u003e# apt-add-repositoryがどこにあるかコマンドラインで調べたい場合はapt-fileを使う\n\u0026gt; apt-get install apt-file\n\u0026gt; apt-file update\n\u0026gt; apt-file search apt-add-repository\n\n# apt-add-repositoryは software-properties-commonに含まれているのでまるっとインストールする\n\u0026gt; apt-get install -y software-properties-common\n\u003c/pre\u003e\u003c/div\u003e\u003c/div\u003e\n\n\u003ch3\u003e\n\u003cspan id=\&quot;non-freeリポジトリを追加する\&quot; class=\&quot;fragment\&quot;\u003e\u003c/span\u003e\u003ca href=\&quot;#non-free%E3%83%AA%E3%83%9D%E3%82%B8%E3%83%88%E3%83%AA%E3%82%92%E8%BF%BD%E5%8A%A0%E3%81%99%E3%82%8B\&quot;\u003e\u003ci class=\&quot;fa fa-link\&quot;\u003e\u003c/i\u003e\u003c/a\u003enon-freeリポジトリを追加する\u003c/h3\u003e\n\n\u003cp\u003e先程調べたiozone3パッケージのあるnon-freeリポジトリをリポジトリのリストに追加してあげる\u003c/p\u003e\n\n\u003cdiv class=\&quot;code-frame\&quot; data-lang=\&quot;text\&quot;\u003e\u003cdiv class=\&quot;highlight\&quot;\u003e\u003cpre\u003e\u0026gt; apt-add-repository non-free\n\u003c/pre\u003e\u003c/div\u003e\u003c/div\u003e\n\n\u003cp\u003eリポジトリリストの確認、一番最後の行にnon-freeが追加されていることがわかる\u003c/p\u003e\n\n\u003cdiv class=\&quot;code-frame\&quot; data-lang=\&quot;text\&quot;\u003e\u003cdiv class=\&quot;highlight\&quot;\u003e\u003cpre\u003e\u0026gt; cat /etc/apt/sources.list\ndeb http://httpredir.debian.org/debian jessie main\ndeb http://httpredir.debian.org/debian jessie-updates main\ndeb http://security.debian.org jessie/updates main\ndeb http://http.us.debian.org/debian/ jessie non-free\n\u003c/pre\u003e\u003c/div\u003e\u003c/div\u003e\n\n\u003ch2\u003e\n\u003cspan id=\&quot;iozone3のインストール\&quot; class=\&quot;fragment\&quot;\u003e\u003c/span\u003e\u003ca href=\&quot;#iozone3%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB\&quot;\u003e\u003ci class=\&quot;fa fa-link\&quot;\u003e\u003c/i\u003e\u003c/a\u003eiozone3のインストール\u003c/h2\u003e\n\n\u003cp\u003e普通にapt-getでインストール出来ることを確認。\u003c/p\u003e\n\n\u003cdiv class=\&quot;code-frame\&quot; data-lang=\&quot;text\&quot;\u003e\u003cdiv class=\&quot;highlight\&quot;\u003e\u003cpre\u003e\u0026gt; apt-get update\n\u0026gt; apt-get install -y iozone3\n\u003c/pre\u003e\u003c/div\u003e\u003c/div\u003e\n\n\u003cp\u003eインストールできたことをバージョンを表示することで確認する\u003c/p\u003e\n\n\u003cdiv class=\&quot;code-frame\&quot; data-lang=\&quot;text\&quot;\u003e\u003cdiv class=\&quot;highlight\&quot;\u003e\u003cpre\u003e\u0026gt; iozone -v\n       &#39;Iozone&#39; Filesystem Benchmark Program\n\n        Version $Revision: 3.429 $\n    Compiled for 64 bit mode.\n\n       Original Author: William Norcott (wnorcott@us.oracle.com)\n               4 Dunlap Drive\n               Nashua, NH 03060\n\n       Enhancements: Don Capps (capps@iozone.org)\n              7417 Crenshaw\n              Plano, TX 75025\n\n  Copyright 1991, 1992, 1994, 1998, 1999, 2002   William D. Norcott\n\n  License to freely use and distribute this software is hereby granted\n  by the author, subject to the condition that this copyright notice\n  remains intact.  The author retains the exclusive right to publish\n  derivative works based on this work, including, but not limited to,\n  revised versions of this work\n\n  Other contributors:\n\n  Don Capps       (Network Appliance)   capps@iozone.org\n\n\u003c/pre\u003e\u003c/div\u003e\u003c/div\u003e\n&quot;,&quot;createdAt&quot;:&quot;2016-10-10T06:43:15Z&quot;,&quot;elapsedYearsFromUpdatedAt&quot;:2,&quot;isDeprecated&quot;:true,&quot;isDestroyableByViewer&quot;:false,&quot;isEditRequestSendableByViewer&quot;:true,&quot;isLikableByViewer&quot;:true,&quot;isLikedByViewer&quot;:false,&quot;isPublic&quot;:true,&quot;isSlide&quot;:false,&quot;isStockableByViewer&quot;:true,&quot;isStockedByViewer&quot;:false,&quot;isUpdatableByViewer&quot;:false,&quot;isUpdated&quot;:true,&quot;likesCount&quot;:60,&quot;originalId&quot;:429424,&quot;title&quot;:&quot;apt-getで見つからないパッケージを追加する方法(debian, ubuntu両方対応)&quot;,&quot;toc&quot;:&quot;\u003cul\u003e\n\u003cli\u003e\n\u003ca href=\&quot;#%E3%81%AF%E3%81%98%E3%82%81%E3%81%AB\&quot;\u003eはじめに\u003c/a\u003e\n\u003cul\u003e\n\u003cli\u003e\n\u003ca href=\&quot;#%E6%A4%9C%E8%A8%BC%E7%92%B0%E5%A2%83\&quot;\u003e検証環境\u003c/a\u003e\n\u003c/li\u003e\n\u003c/ul\u003e\n\u003c/li\u003e\n\u003cli\u003e\n\u003ca href=\&quot;#%E5%AF%BE%E8%B1%A1%E3%81%AE%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8%E3%81%8C%E3%81%A9%E3%81%93%E3%81%AE%E3%83%AA%E3%83%9D%E3%82%B8%E3%83%88%E3%83%AA%E3%81%AB%E3%81%82%E3%82%8B%E3%81%8B%E6%8E%A2%E3%81%99\&quot;\u003e対象のパッケージがどこのリポジトリにあるか探す\u003c/a\u003e\n\u003cul\u003e\n\u003cli\u003e\n\u003ca href=\&quot;#%E3%81%BE%E3%81%9A%E3%83%87%E3%83%95%E3%82%A9%E3%83%AB%E3%83%88%E3%81%AE%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8%E3%81%AE%E3%83%AA%E3%82%B9%E3%83%88%E3%81%8B%E3%82%89%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E3%82%92%E8%A9%A6%E3%81%BF%E3%82%8B\&quot;\u003eまずデフォルトのパッケージのリストからインストールを試みる\u003c/a\u003e\n\u003c/li\u003e\n\u003cli\u003e\n\u003ca href=\&quot;#%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8%E3%81%8C%E3%81%82%E3%82%8B%E3%83%AA%E3%83%9D%E3%82%B8%E3%83%88%E3%83%AA%E3%82%92%E6%8E%A2%E3%81%99\&quot;\u003eパッケージがあるリポジトリを探す\u003c/a\u003e\n\u003c/li\u003e\n\u003c/ul\u003e\n\u003c/li\u003e\n\u003cli\u003e\n\u003ca href=\&quot;#repository%E3%82%92%E8%BF%BD%E5%8A%A0%E3%81%99%E3%82%8B\&quot;\u003erepositoryを追加する\u003c/a\u003e\n\u003cul\u003e\n\u003cli\u003e\n\u003ca href=\&quot;#apt-add-repository%E3%82%92%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E3%81%99%E3%82%8B\&quot;\u003eapt-add-repositoryをインストールする\u003c/a\u003e\n\u003c/li\u003e\n\u003cli\u003e\n\u003ca href=\&quot;#non-free%E3%83%AA%E3%83%9D%E3%82%B8%E3%83%88%E3%83%AA%E3%82%92%E8%BF%BD%E5%8A%A0%E3%81%99%E3%82%8B\&quot;\u003enon-freeリポジトリを追加する\u003c/a\u003e\n\u003c/li\u003e\n\u003c/ul\u003e\n\u003c/li\u003e\n\u003cli\u003e\n\u003ca href=\&quot;#iozone3%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB\&quot;\u003eiozone3のインストール\u003c/a\u003e\n\u003c/li\u003e\n\u003c/ul\u003e\n&quot;,&quot;totalPv&quot;:97233,&quot;updatedAt&quot;:&quot;2016-10-10T07:00:52Z&quot;,&quot;uuid&quot;:&quot;8ac350f3951f8534c931&quot;,&quot;adventCalendarItem&quot;:null,&quot;author&quot;:{&quot;description&quot;:&quot;道産子プログラマ\r\n&quot;,&quot;name&quot;:&quot;&quot;,&quot;profileImageUrl&quot;:&quot;https://qiita-image-store.s3.amazonaws.com/0/5390/profile-images/1473681947&quot;,&quot;urlName&quot;:&quot;kon_yu&quot;,&quot;isFollowedByViewer&quot;:false,&quot;isFollowableByViewer&quot;:true,&quot;websiteUrl&quot;:&quot;http://konyu.hatenablog.com/&quot;,&quot;organizations&quot;:{&quot;edges&quot;:[{&quot;node&quot;:{&quot;name&quot;:&quot;株式会社コードタクト&quot;,&quot;logoUrl&quot;:&quot;https://s3-ap-northeast-1.amazonaws.com/qiita-organization-image/58528bdb90707914f699e4dc6a474d06505455e0/original.jpg?1492147092&quot;,&quot;urlName&quot;:&quot;codetakt&quot;,&quot;description&quot;:&quot;学習管理システム「schoolTakt」を運営するEdTechのスタートアップ企業&quot;,&quot;url&quot;:&quot;http://codetakt.com/&quot;}}]}},&quot;tags&quot;:[{&quot;name&quot;:&quot;Debian&quot;,&quot;urlName&quot;:&quot;debian&quot;},{&quot;name&quot;:&quot;Ubuntu&quot;,&quot;urlName&quot;:&quot;ubuntu&quot;},{&quot;name&quot;:&quot;apt-get&quot;,&quot;urlName&quot;:&quot;apt-get&quot;},{&quot;name&quot;:&quot;apt-add-repository&quot;,&quot;urlName&quot;:&quot;apt-add-repository&quot;}],&quot;followingLikers&quot;:{&quot;edges&quot;:[]},&quot;comments&quot;:{&quot;totalCount&quot;:0}},&quot;viewer&quot;:null,&quot;analyticsTrackingId&quot;:null,&quot;y1test&quot;:false}"><article itemscope="itemscope" itemtype="http://schema.org/Article" class="p-items"><div class="p-items_wrapper"><div class="p-items_container"><div class="p-items_stickyMenu it-Actions"><div class="it-Actions_item it-Actions_item-like likable"><a class="it-Actions_likeCount" href="/kon_yu/items/8ac350f3951f8534c931/likers">60</a><button><i class="fa fa-fw fa-thumbs-up"></i></button></div><div class="it-Actions_item it-Actions_item-stock"><button><i class="fa fa-folder-open"></i></button></div><div class="it-Actions_jumpToCommentButton"><div class="it-Actions_commentCount"></div><div class="fa fa-fw fa-comment"></div></div><div class="it-Actions_shareButton it-Actions_shareButton-twitter"><span class="fa fa-twitter"></span></div><div class="it-Actions_shareButton it-Actions_shareButton-facebook"><span class="fa fa-facebook"></span></div></div><div class="p-items_main"><div class="p-items_article"><div class="it-Header"><div class="u-flex-center-between mb-3"><div class="it-Header_info"><div class="it-Header_author"><a href="/kon_yu"><img class="it-Header_authorImage" src="https://qiita-image-store.s3.amazonaws.com/0/5390/profile-images/1473681947" /></a><a class="it-Header_authorName" href="/kon_yu">@kon_yu</a> </div><div class="it-Header_time"></div><div class="it-Header_meta"><div class="it-Header_manipulate"><div class="dropdown"><span class="dropdown-toggle" tabindex="0"><span class="fa fa-ellipsis-h fa-lg"></span></span></div></div></div></div></div><h1 class="it-Header_title" itemprop="headline">apt-getで見つからないパッケージを追加する方法(debian, ubuntu両方対応)</h1><div class="it-Tags"><a class="it-Tags_item" href="/tags/%23%3CQiita::Graph::Result:0x0056321c4557f0%3E"><span>Debian</span></a><a class="it-Tags_item" href="/tags/%23%3CQiita::Graph::Result:0x0056321c4557a0%3E"><span>Ubuntu</span></a><a class="it-Tags_item" href="/tags/%23%3CQiita::Graph::Result:0x0056321c455750%3E"><span>apt-get</span></a><a class="it-Tags_item" href="/tags/%23%3CQiita::Graph::Result:0x0056321c455700%3E"><span>apt-add-repository</span></a></div></div><div class="it-ActionsMobile"><div class="it-ActionsMobile_like likable"><button><span class="fa fa-fw fa-thumbs-up" /><span>60</span></button></div><div class="it-ActionsMobile_stock"><button><div class="fa fa-folder-open"></div></button></div></div><div class="it-DeprecationAlert_one mb-5 p-2"><span class="fa fa-warning mr-1"></span>More than 1 year has passed since last update.</div><section class="it-MdContent" itemprop="articleBody"><div id="item-8ac350f3951f8534c931"><p>
+<h2>
+<br /><span class="fragment"></span><a href="#%E3%81%AF%E3%81%98%E3%82%81%E3%81%AB"><i class="fa fa-link"></i></a>はじめに</h2></p>
+
+<p><p>apt-get installでパッケージ名を指定してインストールしようとした場合に、デフォルトにリポジトリに登録されておらずインストール出来ない場合がある。<br>
+<br />今回はiozone3をインストールする例を使って説明する。</p></p>
+
+<p><h3>
+<br /><span class="fragment"></span><a href="#%E6%A4%9C%E8%A8%BC%E7%92%B0%E5%A2%83"><i class="fa fa-link"></i></a>検証環境</h3></p>
+
+<p><p>Debian GNU/Linux 8</p></p>
+
+<p><h2>
+<br /><span class="fragment"></span><a href="#%E5%AF%BE%E8%B1%A1%E3%81%AE%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8%E3%81%8C%E3%81%A9%E3%81%93%E3%81%AE%E3%83%AA%E3%83%9D%E3%82%B8%E3%83%88%E3%83%AA%E3%81%AB%E3%81%82%E3%82%8B%E3%81%8B%E6%8E%A2%E3%81%99"><i class="fa fa-link"></i></a>対象のパッケージがどこのリポジトリにあるか探す</h2></p>
+
+<p><h3>
+<br /><span class="fragment"></span><a href="#%E3%81%BE%E3%81%9A%E3%83%87%E3%83%95%E3%82%A9%E3%83%AB%E3%83%88%E3%81%AE%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8%E3%81%AE%E3%83%AA%E3%82%B9%E3%83%88%E3%81%8B%E3%82%89%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E3%82%92%E8%A9%A6%E3%81%BF%E3%82%8B"><i class="fa fa-link"></i></a>まずデフォルトのパッケージのリストからインストールを試みる</h3></p>
+
+<p><p>まずデフォルトのパッケージのリストからインストールを試みてパッケージが見つからないエラーが出ることを確認する</p></p>
+
+<p><div class="code-frame"><div class="highlight"><pre>&gt; apt-get install iozone3
+<br />Reading package lists... Done
+<br />Building dependency tree
+<br />Reading state information... Done
+<br />E: Unable to locate package iozone3
+<br /></pre></div></div></p>
+
+<p><h3>
+<br /><span class="fragment"></span><a href="#%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8%E3%81%8C%E3%81%82%E3%82%8B%E3%83%AA%E3%83%9D%E3%82%B8%E3%83%88%E3%83%AA%E3%82%92%E6%8E%A2%E3%81%99"><i class="fa fa-link"></i></a>パッケージがあるリポジトリを探す</h3></p>
+
+<p><p>パッケージ名を検索ウインドウに入れて調べると、どこのパッケージにあるか教えてくれる。</p></p>
+
+<p><p>Debianの場合はこちら<br>
+<br /><a href="https://www.debian.org/distrib/packages" class="autolink">https://www.debian.org/distrib/packages</a></p></p>
+
+<p><p>Ubuntuの場合はこちら<br>
+<br /><a href="http://packages.ubuntu.com/ja/" class="autolink">http://packages.ubuntu.com/ja/</a></p></p>
+
+<p><p>Debianのiozone3はnon-freeのリポジトリにある<br>
+<br /><a href="https://packages.debian.org/jessie/utils/iozone3" class="autolink">https://packages.debian.org/jessie/utils/iozone3</a></p></p>
+
+<p><p>以下よりnon-freeリポジトリをリポジトリのリストに追加する手順を説明する</p></p>
+
+<p><h2>
+<br /><span class="fragment"></span><a href="#repository%E3%82%92%E8%BF%BD%E5%8A%A0%E3%81%99%E3%82%8B"><i class="fa fa-link"></i></a>repositoryを追加する</h2></p>
+
+<p><p>まず現状のリポジトリのリストを確認する</p></p>
+
+<p><div class="code-frame"><div class="highlight"><pre>&gt; cat /etc/apt/sources.list
+<br />deb http://httpredir.debian.org/debian jessie main
+<br />deb http://httpredir.debian.org/debian jessie-updates main
+<br />deb http://security.debian.org jessie/updates main
+<br /></pre></div></div></p>
+
+<p><p>non-freeがないことを確認</p></p>
+
+<p><h3>
+<br /><span class="fragment"></span><a href="#apt-add-repository%E3%82%92%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E3%81%99%E3%82%8B"><i class="fa fa-link"></i></a>apt-add-repositoryをインストールする</h3></p>
+
+<p><p>リポジトリの追加用のapt-add-repositoryパッケージをインストールする</p></p>
+
+<p><div class="code-frame"><div class="highlight"><pre># apt-add-repositoryがどこにあるかコマンドラインで調べたい場合はapt-fileを使う
+<br />&gt; apt-get install apt-file
+<br />&gt; apt-file update
+<br />&gt; apt-file search apt-add-repository</p>
+
+<p># apt-add-repositoryは software-properties-commonに含まれているのでまるっとインストールする
+<br />&gt; apt-get install -y software-properties-common
+<br /></pre></div></div></p>
+
+<p><h3>
+<br /><span class="fragment"></span><a href="#non-free%E3%83%AA%E3%83%9D%E3%82%B8%E3%83%88%E3%83%AA%E3%82%92%E8%BF%BD%E5%8A%A0%E3%81%99%E3%82%8B"><i class="fa fa-link"></i></a>non-freeリポジトリを追加する</h3></p>
+
+<p><p>先程調べたiozone3パッケージのあるnon-freeリポジトリをリポジトリのリストに追加してあげる</p></p>
+
+<p><div class="code-frame"><div class="highlight"><pre>&gt; apt-add-repository non-free
+<br /></pre></div></div></p>
+
+<p><p>リポジトリリストの確認、一番最後の行にnon-freeが追加されていることがわかる</p></p>
+
+<p><div class="code-frame"><div class="highlight"><pre>&gt; cat /etc/apt/sources.list
+<br />deb http://httpredir.debian.org/debian jessie main
+<br />deb http://httpredir.debian.org/debian jessie-updates main
+<br />deb http://security.debian.org jessie/updates main
+<br />deb http://http.us.debian.org/debian/ jessie non-free
+<br /></pre></div></div></p>
+
+<p><h2>
+<br /><span class="fragment"></span><a href="#iozone3%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB"><i class="fa fa-link"></i></a>iozone3のインストール</h2></p>
+
+<p><p>普通にapt-getでインストール出来ることを確認。</p></p>
+
+<p><div class="code-frame"><div class="highlight"><pre>&gt; apt-get update
+<br />&gt; apt-get install -y iozone3
+<br /></pre></div></div></p>
+
+<p><p>インストールできたことをバージョンを表示することで確認する</p></p>
+
+<p><div class="code-frame"><div class="highlight"><pre>&gt; iozone -v
+<br />       'Iozone' Filesystem Benchmark Program</p>
+
+<p>        Version $Revision: 3.429 $
+<br />    Compiled for 64 bit mode.</p>
+
+<p>       Original Author: William Norcott (wnorcott@us.oracle.com)
+<br />               4 Dunlap Drive
+<br />               Nashua, NH 03060</p>
+
+<p>       Enhancements: Don Capps (capps@iozone.org)
+<br />              7417 Crenshaw
+<br />              Plano, TX 75025</p>
+
+<p>  Copyright 1991, 1992, 1994, 1998, 1999, 2002   William D. Norcott</p>
+
+<p>  License to freely use and distribute this software is hereby granted
+<br />  by the author, subject to the condition that this copyright notice
+<br />  remains intact.  The author retains the exclusive right to publish
+<br />  derivative works based on this work, including, but not limited to,
+<br />  revised versions of this work</p>
+
+<p>  Other contributors:</p>
+
+<p>  Don Capps       (Network Appliance)   capps@iozone.org</p>
+
+<p></pre></div></div>
+</p></div></section><div class="it-Footer"><div class="it-Footer_actions"><div class="it-Footer_editRequest"><a class="u-link-no-underline" href="/kon_yu/items/8ac350f3951f8534c931/edit"><span class="fa fa-fw fa-send"></span><span>Edit request</span></a></div><div class="it-Footer_stock"><button><span class="fa fa-folder-open"></span><span class="it-Footer_stockLabel">Stock</span></button></div><div class="it-Footer_like"><button><span class="fa fa-fw fa-thumbs-up"></span><span>Like</span></button><a class="it-Footer_likeCount" href="/kon_yu/items/8ac350f3951f8534c931/likers">60</a></div></div><div class="it-Footer_social"><div class="it-Footer_shareButton it-Footer_shareButton-webshare"><span class="fa fa-share-alt"></span></div><div class="it-Footer_shareButton it-Footer_shareButton-twitter"><span class="fa fa-twitter"></span></div><div class="it-Footer_shareButton it-Footer_shareButton-facebook"><span class="fa fa-facebook"></span></div></div></div><div class="ai-Container" itemprop="author" itemscope="" itemtype="http://schema.org/Person"><div class="it-User"><a href="/kon_yu"><img class="ai-User_image" itemprop="image" alt="kon_yu" src="https://qiita-image-store.s3.amazonaws.com/0/5390/profile-images/1473681947" /></a><div class="ai-User_body"><div class="ai-User_header"><a class="ai-User_urlname" itemprop="name" href="/kon_yu">kon_yu</a><span itemprop="memberOf" itemscope="" itemtype="http://schema.org/Organization"><a itemprop="url" href="/organizations/%23%3CQiita::Graph::Result:0x00563219057a20%3E"><img alt="株式会社コードタクト" class="ai-User_organization" itemprop="image" src="https://s3-ap-northeast-1.amazonaws.com/qiita-organization-image/58528bdb90707914f699e4dc6a474d06505455e0/original.jpg?1492147092" /></a></span></div><div class="ai-User_description">道産子プログラマ
+</div><a class="ai-User_website" href="http://konyu.hatenablog.com/">http://konyu.hatenablog.com/</a></div></div><div class="ai-Organization" itemprop="memberOf" itemscope="" itemtype="http://schema.org/Organization"><a href="/organizations/%23%3CQiita::Graph::Result:0x00563219057a20%3E"><img class="ai-Organization_image" itemprop="image" src="https://s3-ap-northeast-1.amazonaws.com/qiita-organization-image/58528bdb90707914f699e4dc6a474d06505455e0/original.jpg?1492147092" /></a><div class="ai-Organization_body"><div class="ai-Organization_header"><a class="ai-Organization_name" itemprop="url" href="/organizations/%23%3CQiita::Graph::Result:0x00563219057a20%3E"><span itemprop="legalName">株式会社コードタクト</span></a></div><div class="ai-Organization_description" itemprop="description">学習管理システム「schoolTakt」を運営するEdTechのスタートアップ企業</div><a class="ai-Organization_website" href="http://codetakt.com/">http://codetakt.com/</a></div></div></div></div></div><div class="p-items_options"></div><div class="p-items_toc"><div class="it-Toc"><div class="it-Toc_nav"><ul>
+<li>
+<a href="#%E3%81%AF%E3%81%98%E3%82%81%E3%81%AB">はじめに</a>
+<ul>
+<li>
+<a href="#%E6%A4%9C%E8%A8%BC%E7%92%B0%E5%A2%83">検証環境</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#%E5%AF%BE%E8%B1%A1%E3%81%AE%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8%E3%81%8C%E3%81%A9%E3%81%93%E3%81%AE%E3%83%AA%E3%83%9D%E3%82%B8%E3%83%88%E3%83%AA%E3%81%AB%E3%81%82%E3%82%8B%E3%81%8B%E6%8E%A2%E3%81%99">対象のパッケージがどこのリポジトリにあるか探す</a>
+<ul>
+<li>
+<a href="#%E3%81%BE%E3%81%9A%E3%83%87%E3%83%95%E3%82%A9%E3%83%AB%E3%83%88%E3%81%AE%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8%E3%81%AE%E3%83%AA%E3%82%B9%E3%83%88%E3%81%8B%E3%82%89%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E3%82%92%E8%A9%A6%E3%81%BF%E3%82%8B">まずデフォルトのパッケージのリストからインストールを試みる</a>
+</li>
+<li>
+<a href="#%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8%E3%81%8C%E3%81%82%E3%82%8B%E3%83%AA%E3%83%9D%E3%82%B8%E3%83%88%E3%83%AA%E3%82%92%E6%8E%A2%E3%81%99">パッケージがあるリポジトリを探す</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#repository%E3%82%92%E8%BF%BD%E5%8A%A0%E3%81%99%E3%82%8B">repositoryを追加する</a>
+<ul>
+<li>
+<a href="#apt-add-repository%E3%82%92%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E3%81%99%E3%82%8B">apt-add-repositoryをインストールする</a>
+</li>
+<li>
+<a href="#non-free%E3%83%AA%E3%83%9D%E3%82%B8%E3%83%88%E3%83%AA%E3%82%92%E8%BF%BD%E5%8A%A0%E3%81%99%E3%82%8B">non-freeリポジトリを追加する</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#iozone3%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB">iozone3のインストール</a>
+</li>
+</ul>
+</div></div></div></div></div><div class="p-items_wrapper p-items_wrapper-white"><div class="p-items_container"><div class="p-items_leftDummy"></div><div class="p-items_main"></div><div class="p-items_rightDummy"></div></div></div></article></div><script src="//d-cache.microad.jp/js/td_qt_access.js" type="text/javascript"></script><script>microadTd.QT.start({"article_category": "Debian,Ubuntu,apt-get,apt-add-repository"})</script><script>(function(d,u){var b=d.getElementsByTagName("script")[0],j=d.createElement("script");j.async=true;j.src=u;b.parentNode.insertBefore(j,b);})(document,"//img.ak.impact-ad.jp/ut/ff9a3577423c8ed5_4330.js");</script><noscript><iframe frameborder="0" height="0" src="//nspt.unitag.jp/ff9a3577423c8ed5_4330.php" width="0"></iframe></noscript><footer id="globalFooter" class="st-Footer px-2 px-1@s pt-1 pt-3@s pb-2"><div class="st-Footer_container"><ul class="st-Footer_start"><li class="st-Footer_link"><a class="st-Footer_copyright" href="https://increments.co.jp">© 2011-2019 Increments Inc.</a></li><li class="st-Footer_link"><a href="/terms">Terms</a></li><li class="st-Footer_link"><a target="_blank" href="http://help.qiita.com/ja/articles/qiita-community-guideline">Guideline</a></li><li class="st-Footer_link"><a href="/privacy">Privacy</a></li><li class="st-Footer_link"><a href="https://help.qiita.com">Help</a></li></ul><ul class="st-Footer_end"><li class="st-Footer_link"><a href="/about">About</a></li><li class="st-Footer_link"><a href="/users">Users</a></li><li class="st-Footer_link"><a href="/tags">Tags</a></li><li class="st-Footer_link"><a href="/items">Items</a></li><li class="st-Footer_link"><a href="https://blog.qiita.com">Blog</a></li><li class="st-Footer_link"><a href="/api/v2/docs">API</a></li><li class="st-Footer_link"><a href="https://teams.qiita.com">Qiita:Team</a></li><li class="st-Footer_link"><a target="_blank" href="https://zine.qiita.com?utm_source=qiita&amp;utm_medium=referral&amp;utm_content=footer">Qiita:Zine</a></li><li class="st-Footer_link"><a target="_blank" href="https://zine.qiita.com/products/about-qiita-ad-2/?utm_source=qiita&amp;utm_medium=referral&amp;utm_content=footer">Advertisement</a></li><li class="st-Footer_link"><a href="/feedback/new">ご意見</a></li></ul></div></footer></div><div class="p-messages"><div data-hyperapp-app="Message" data-hyperapp-props="{&quot;messages&quot;:[]}"></div></div><div id="dataContainer" style="display: none;" data-config="{&quot;actionPath&quot;:&quot;public/items#show&quot;,&quot;settings&quot;:{&quot;analyticsTrackingId&quot;:&quot;UA-24675221-12&quot;,&quot;mixpanelToken&quot;:&quot;17d24b448ca579c365d2d1057f3a1791&quot;,&quot;assetsMap&quot;:{},&quot;csrfToken&quot;:&quot;OnSHz/64b2kMBW1zq8+81HnhKA/HoWoqevRRBxUv0c9siPXapEzjfLgv0qvg5ssH6maehaqGV97PW3QLj+c13g==&quot;,&quot;locale&quot;:&quot;en&quot;},&quot;currentUser&quot;:null}" /><script>/* <![CDATA[ */
+var yahoo_retargeting_id = '6B63B2EQA6';
+var yahoo_retargeting_label = 'qiita';
+var yahoo_retargeting_page_type = '';
+var yahoo_retargeting_items = [{item_id: '', category_id: '', price: '', quantity: ''}];
+/* ]]> */</script><script language="javascript" src="https://b92.yahoo.co.jp/js/s_retargeting.js" type="text/javascript"></script><script src="//platform.twitter.com/oct.js" type="text/javascript"></script><script>twttr.conversion.trackPid('nzz0o', { tw_sale_amount: 0, tw_order_quantity: 0 });</script><noscript><img alt="" height="1" src="https://analytics.twitter.com/i/adsct?txn_id=nzz0o&amp;p_id=Twitter&amp;tw_sale_amount=0&amp;tw_order_quantity=0" style="display:none;" width="1" /><img alt="" height="1" src="//t.co/i/adsct?txn_id=nzz0o&amp;p_id=Twitter&amp;tw_sale_amount=0&amp;tw_order_quantity=0" style="display:none;" width="1" /></noscript></body></html>
